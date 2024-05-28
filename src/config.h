@@ -1,0 +1,15 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+#include <Arduino.h>
+
+#define LED_BUILTIN GPIO_NUM_1
+
+/*настройки системы поворота*/
+#define STEPPER_SPEED 9                 //скорость в оборотах в минуту (для шагового 28BYJ-48 от 1-9 об/мин)
+#define STEPS_PER_REVILUTION 2048       //количество шагов в одном обороте (для шагового 28BYJ-48 2038 шагов)
+#define STEPPER_PIN_IN1 GPIO_NUM_13
+#define STEPPER_PIN_IN2 GPIO_NUM_12
+#define STEPPER_PIN_IN3 GPIO_NUM_14
+#define STEPPER_PIN_IN4 GPIO_NUM_27
+
+#endif
