@@ -82,97 +82,97 @@
 
 /*
  * two-wire constructor.
- * Sets which wires should control the motor.
+ * Установка, какие провода должны управлять двигателем.
  */
 Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2)
 {
-  this->step_number = 0;    // which step the motor is on
-  this->direction = 0;      // motor direction
+  this->step_number = 0;    // На каком шаге двигатель включен
+  this->direction = 0;      // Направление вращения двигателя
   this->last_step_time = 0; // time stamp in us of the last step taken
-  this->number_of_steps = number_of_steps; // total number of steps for this motor
+  this->number_of_steps = number_of_steps; // количество шагов, на один оборот двигатель
 
-  // Arduino pins for the motor control connection:
+  // Arduino Pins для подключения управления двигателем:
   this->motor_pin_1 = motor_pin_1;
   this->motor_pin_2 = motor_pin_2;
 
-  // setup the pins on the microcontroller:
+  // настройка пинов на микроконтроллере:
   pinMode(this->motor_pin_1, OUTPUT);
   pinMode(this->motor_pin_2, OUTPUT);
 
-  // When there are only 2 pins, set the others to 0:
+  // Когда есть только 2 контакта, установите другие на 0:
   this->motor_pin_3 = 0;
   this->motor_pin_4 = 0;
   this->motor_pin_5 = 0;
 
-  // pin_count is used by the stepMotor() method:
+  // pin_count используется методом StepMotor():
   this->pin_count = 2;
 }
 
 
 /*
  *   constructor for four-pin version
- *   Sets which wires should control the motor.
+ *   Установка, какие провода должны управлять двигателем.
  */
 Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
                                       int motor_pin_3, int motor_pin_4)
 {
-  this->step_number = 0;    // which step the motor is on
-  this->direction = 0;      // motor direction
+  this->step_number = 0;    // На каком шаге двигатель включен
+  this->direction = 0;      // Направление вращения двигателя
   this->last_step_time = 0; // time stamp in us of the last step taken
-  this->number_of_steps = number_of_steps; // total number of steps for this motor
+  this->number_of_steps = number_of_steps; // количество шагов, на один оборот двигатель
 
-  // Arduino pins for the motor control connection:
+  // Arduino Pins для подключения управления двигателем:
   this->motor_pin_1 = motor_pin_1;
   this->motor_pin_2 = motor_pin_2;
   this->motor_pin_3 = motor_pin_3;
   this->motor_pin_4 = motor_pin_4;
 
-  // setup the pins on the microcontroller:
+  // настройка пинов на микроконтроллере:
   pinMode(this->motor_pin_1, OUTPUT);
   pinMode(this->motor_pin_2, OUTPUT);
   pinMode(this->motor_pin_3, OUTPUT);
   pinMode(this->motor_pin_4, OUTPUT);
 
-  // When there are 4 pins, set the others to 0:
+  // Когда есть 4 контакта, установите другие на 0:
   this->motor_pin_5 = 0;
 
-  // pin_count is used by the stepMotor() method:
+  // pin_count используется методом StepMotor():
   this->pin_count = 4;
 }
 
 /*
  *   constructor for five phase motor with five wires
- *   Sets which wires should control the motor.
+ *   Установки, какие провода должны управлять двигателем.
  */
 Stepper::Stepper(int number_of_steps, int motor_pin_1, int motor_pin_2,
                                       int motor_pin_3, int motor_pin_4,
                                       int motor_pin_5)
 {
-  this->step_number = 0;    // which step the motor is on
-  this->direction = 0;      // motor direction
+  this->step_number = 0;    // На каком шаге двигатель включен
+  this->direction = 0;      // Направление вращения двигателя
   this->last_step_time = 0; // time stamp in us of the last step taken
-  this->number_of_steps = number_of_steps; // total number of steps for this motor
+  this->number_of_steps = number_of_steps; // количество шагов, на один оборот двигатель
 
-  // Arduino pins for the motor control connection:
+  // Arduino Pins для подключения управления двигателем:
   this->motor_pin_1 = motor_pin_1;
   this->motor_pin_2 = motor_pin_2;
   this->motor_pin_3 = motor_pin_3;
   this->motor_pin_4 = motor_pin_4;
   this->motor_pin_5 = motor_pin_5;
 
-  // setup the pins on the microcontroller:
+  // настройка пинов на микроконтроллере:
   pinMode(this->motor_pin_1, OUTPUT);
   pinMode(this->motor_pin_2, OUTPUT);
   pinMode(this->motor_pin_3, OUTPUT);
   pinMode(this->motor_pin_4, OUTPUT);
   pinMode(this->motor_pin_5, OUTPUT);
 
-  // pin_count is used by the stepMotor() method:
+  // pin_count используется методом StepMotor():
   this->pin_count = 5;
 }
 
 /*
- * Sets the speed in revs per minute
+ * Устанавливает скорость в оборотах в минуту
  */
 void Stepper::setSpeed(long whatSpeed)
 {
@@ -180,12 +180,12 @@ void Stepper::setSpeed(long whatSpeed)
 }
 
 /*
- * Moves the motor steps_to_move steps.  If the number is negative,
- * the motor moves in the reverse direction.
+ * Перемещает двигатель steps_to_move на шаг. Если число отрицательное,
+ * двигатель перемещается в обратном направлении.
  */
 void Stepper::step(int steps_to_move)
 {
-  int steps_left = abs(steps_to_move);  //Сколько шагов нужно сделать
+  int steps_left = steps_to_move;  //Сколько шагов нужно сделать
 
   // Определите направление на основе того, является ли Step_to_mode + или -:
   if (steps_to_move > 0) { this->direction = 1; }
@@ -193,22 +193,23 @@ void Stepper::step(int steps_to_move)
 
 
   // уменьшить количество шагов, каждый раз перемещая один шаг:
-  while (steps_left > 0)
+  while (this->direction == 1 && steps_left > 0 || this->direction == 0 && steps_left < 0)
   {
     unsigned long now = micros();
     // Переместите только в том случае, если соответствующая задержка прошла:
     if (now - this->last_step_time >= this->step_delay)
     {
-      // get the timeStamp of when you stepped:
+      // Получите временную метку когда ты шагнул:
       this->last_step_time = now;
-      // increment or decrement the step number,
-      // depending on direction:
+      // увеличить или уменьшить номер шага,
+      // В зависимости от направления:
       if (this->direction == 1)
       {
         this->step_number++;
         if (this->step_number == this->number_of_steps) {
           this->step_number = 0;
         }
+        steps_left--;
       }
       else
       {
@@ -216,9 +217,9 @@ void Stepper::step(int steps_to_move)
           this->step_number = this->number_of_steps;
         }
         this->step_number--;
+        steps_left++;
       }
-      // decrement the steps left:
-      steps_left--;
+      // уменьшить оставшиеся шаги:
       // step the motor to step number 0, 1, ..., {3 or 10}
       if (this->pin_count == 5)
         stepMotor(this->step_number % 10);
