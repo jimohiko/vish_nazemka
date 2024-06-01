@@ -1,6 +1,6 @@
 #include "rotation_system.h"
-#define piNumber 3.141592653589793  //число пи
 TinyStepper_28BYJ_48 myStepper;
+Servo myServo;
 
 
 void setRotation(int16_t setCorner);
@@ -11,9 +11,14 @@ void rotationSystemInit() {
     myStepper.connectToPins(STEPPER_PIN_IN1, STEPPER_PIN_IN2, STEPPER_PIN_IN3, STEPPER_PIN_IN4);
     myStepper.setSpeedInStepsPerSecond(STEPPER_SPEED);
     myStepper.setAccelerationInStepsPerSecondPerSecond(STEPPER_ACCELERATION);
+    myServo.attach(SERVO_PIN);
+    myServo.write(90);
+    delay(100);
     setRotation(360);
     delay(100);
     setRotation(0);
+    delay(100);
+    guidanceRotationSystem(180, 0, 60, 0, 0.0001, 60, 11.1196);
 }
 
 /*функцыя установки градуса поворота шагового привода*/
@@ -26,12 +31,12 @@ void setRotation(int16_t setCorner) {
 
 /*функцыя конвертацыя градусов в радианы*/
 double convertingDegreeToRadian(double degree) {
-    return((degree * piNumber) / 180);
+    return((degree * PI_NUMBER) / 180);
 }
 
 /*функцыя конвертацыя радиан в градусы*/
 double convertingRadianToDegree(double radian) {
-    return((radian * 180) / piNumber);
+    return((radian * 180) / PI_NUMBER);
 }
 
 /*функцыя вычисление азимута*/
@@ -53,13 +58,25 @@ double azimuth(double stationWidth, double stationLongitude, double objectWidth,
     return(convertingRadianToDegree(atan2(x, y)));
 }
 
+/*вычисление растояния при помоши функции "гаверсинус"*/
+double distancesHaversine(double stationWidth, double stationLongitude, double objectWidth, double objectLongitude) {
+    /*конвертацыя градусов в радианы*/
+    stationLongitude = convertingDegreeToRadian(stationLongitude);
+    stationWidth = convertingDegreeToRadian(stationWidth);
+    objectLongitude = convertingDegreeToRadian(objectLongitude);
+    objectWidth = convertingDegreeToRadian(objectWidth);
+    /*вычислуния*/
+    double deltaLongitude = objectLongitude - stationLongitude;
+    double deltawidth = objectWidth - stationWidth;
+    double rezult = asin(sqrt((1 - cos(deltawidth) + cos(stationWidth) * cos(objectWidth) * (1 - cos(deltaLongitude))) / 2));
+
+    return(2 * DIAMETER_OF_EARTH * rezult);
+}
+
 
 /*функцыя наведения системы поворота*/
-void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double stationLongitude, double objectWidth, double objectLongitude, double objectHeight){
+void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double stationLongitude, double stationHeight , double objectWidth, double objectLongitude, double objectHeight){
     setRotation(360 - magneticAzimuth + azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude));
+    myServo.write(convertingRadianToDegree(atan((objectHeight - stationHeight) / distancesHaversine(stationWidth, stationLongitude, objectWidth, objectLongitude))) + 90);
 }
 
-/*тестовая функцыя на время разроботки*/
-void rotationSystemTest() {
-    guidanceRotationSystem(310, 0, 60, 0, 70, 5);
-}
