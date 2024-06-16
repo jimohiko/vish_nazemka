@@ -7,16 +7,19 @@
 int tickIndicator = 0;
 
 void setup() {
-    Serial.begin(9600);
-    
+    Serial.begin(115200);
+    Serial.print(".");
     pinMode(LED_BUILTIN, OUTPUT);
 
-    rotationSystemInit();
+    sensorsInit();
+    // rotationSystemInit();
 }
 
 void loop() {
     if (++tickIndicator >= 50000) {
         digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+        Serial.print(".");
         tickIndicator = 0;
     }
+    sensorTest();
 }
