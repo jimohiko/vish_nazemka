@@ -8,7 +8,11 @@
 #include "config.h"
 // #include <MPU6050.h>
 
-void sensorsInit();     //инициализация всех необходимых датчиков
+void sensorsInit();         //инициализация всех необходимых датчиков
+void getGpsData();          //получение GPS кординат
+double getGpsWidth();       //возврашает широту
+double getGpsLongitude();   //возврашает долготу
+double getAzimutComps();    //возврашает азимут с магнитометра
 void sensorTest();
 
 #endif

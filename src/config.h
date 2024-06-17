@@ -18,5 +18,6 @@
 
 /*настройки датчиков*/
 #define GPSSerial Serial2               //serial порт к которому подключен gps
+#define GPS_SPEED 9600                  //скорость serial для gps
 
 #endif

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "config.h"
 #include "Sensors/Sensors.h"
+#include "uart_parser/uart_parser.h"
 #include "rotation_system/rotation_system.h"
 
 
@@ -21,5 +22,7 @@ void loop() {
         Serial.print(".");
         tickIndicator = 0;
     }
+    getGpsData();
+    // rotationSystemInit(0, getGpsWidth, getGpsLongitude, 0, 0, 0, 0);
     sensorTest();
 }

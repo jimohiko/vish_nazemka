@@ -8,53 +8,57 @@ TinyGPSPlus GPS;
 Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345); // Айди магнитометра
 
 void sensorsInit() {
-  GPSSerial.begin(9600);
+  GPSSerial.begin(GPS_SPEED);
 }
 
-int getMagData() {
+double getAzimutComps() {
   sensors_event_t event;
   mag.getEvent(&event);
 
-  float heading = atan2(event.magnetic.y, event.magnetic.x); // Получаем угол
-  int headingDegrees = heading * 180 / M_PI;
-
-  int headingInt = round(headingDegrees); // Округляем
-
-  return headingInt;
+  double heading = atan2(event.magnetic.y, event.magnetic.x); // Получаем угол
+  double headingDegrees = heading * 180 / M_PI;
+  return headingDegrees;
 }
 
-int getGpsData() {
-  if (GPSSerial.available()) {
-    char dataGps = GPSSerial.read();
-    Serial.write(dataGps);
-    return dataGps;
-  }
-}
-
-void sensorTest() {
+double gpsWidth = 0;
+double gpsLongitude = 0;
+void getGpsData() {
   if (GPSSerial.available()) {
     GPS.encode(GPSSerial.read());
   }
   if (GPS.location.isUpdated()) {
-    Serial.print(GPS.location.lat(), 6);
-    Serial.print(", ");
-    Serial.println(GPS.location.lng(), 6);
+    gpsWidth = GPS.location.lat();
+    gpsLongitude = GPS.location.lng();
   }
 }
 
-void getAndPrintSensorData() {
-  int16_t ax, ay, az;
-  int16_t gx, gy, gz;
-
-  // mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-
-  Serial.print("Ускорение: ");
-  Serial.print("X = "); Serial.print(ax);
-  Serial.print(", Y = "); Serial.print(ay);
-  Serial.print(", Z = "); Serial.print(az);
-
-  Serial.print(" Гироскоп: ");
-  Serial.print("X = "); Serial.print(gx);
-  Serial.print(", Y = "); Serial.print(gy);
-  Serial.print(", Z = "); Serial.println(gz);
+double getGpsWidth() {
+  return(gpsWidth);
 }
+double getGpsLongitude() {
+  return(gpsLongitude);
+}
+
+void sensorTest() {
+  Serial.print("\n");
+  Serial.print(getGpsWidth(), 6);
+  Serial.print(", ");
+  Serial.print(getGpsLongitude(), 6);
+}
+
+// void getAndPrintSensorData() {
+//   int16_t ax, ay, az;
+//   int16_t gx, gy, gz;
+
+//   // mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+//   Serial.print("Ускорение: ");
+//   Serial.print("X = "); Serial.print(ax);
+//   Serial.print(", Y = "); Serial.print(ay);
+//   Serial.print(", Z = "); Serial.print(az);
+
+//   Serial.print(" Гироскоп: ");
+//   Serial.print("X = "); Serial.print(gx);
+//   Serial.print(", Y = "); Serial.print(gy);
+//   Serial.print(", Z = "); Serial.println(gz);
+// }
