@@ -13,6 +13,8 @@ void getGpsData();          //получение GPS кординат
 double getGpsWidth();       //возврашает широту
 double getGpsLongitude();   //возврашает долготу
 double getAzimutComps();    //возврашает азимут с магнитометра
+#if GPS_TEST == true
 void sensorTest();
+#endif
 
 #endif

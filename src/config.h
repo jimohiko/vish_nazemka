@@ -4,6 +4,10 @@
 
 #define LED_BUILTIN GPIO_NUM_21
 
+/*debag*/
+#define GPS_TEST false
+#define UART_PARSER_TEST true
+
 /*настройки системы поворота*/
 #define PI_NUMBER 3.141592653589793     //число пи
 #define DIAMETER_OF_EARTH 6371008       //диаметр земли
@@ -19,5 +23,9 @@
 /*настройки датчиков*/
 #define GPSSerial Serial2               //serial порт к которому подключен gps
 #define GPS_SPEED 9600                  //скорость serial для gps
+
+/*настройки парсера*/
+#define parserSerial Serial1            //serial порт uart_parser
+#define PARSER_SERIAL_SPEED 115200      //скорость serial для uart_parser
 
 #endif

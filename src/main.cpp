@@ -12,6 +12,7 @@ void setup() {
     Serial.print(".");
     pinMode(LED_BUILTIN, OUTPUT);
 
+    uartParserInit();
     sensorsInit();
     // rotationSystemInit();
 }
@@ -20,9 +21,17 @@ void loop() {
     if (++tickIndicator >= 50000) {
         digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
         Serial.print(".");
+    #if UART_PARSER_TEST == true
+    uartParserTest();
+    #endif
         tickIndicator = 0;
     }
+    
     getGpsData();
     // rotationSystemInit(0, getGpsWidth, getGpsLongitude, 0, 0, 0, 0);
+    
+    #if GPS_TEST == true
     sensorTest();
+    #endif
+
 }

@@ -39,12 +39,14 @@ double getGpsLongitude() {
   return(gpsLongitude);
 }
 
+#if GPS_TEST == true
 void sensorTest() {
   Serial.print("\n");
   Serial.print(getGpsWidth(), 6);
   Serial.print(", ");
   Serial.print(getGpsLongitude(), 6);
 }
+#endif
 
 // void getAndPrintSensorData() {
 //   int16_t ax, ay, az;
