@@ -21,12 +21,12 @@ void loop() {
     if (++tickIndicator >= 50000) {
         digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
         Serial.print(".");
-    #if UART_PARSER_TEST == true
-    uartParserTest();
-    #endif
         tickIndicator = 0;
     }
     
+    #if UART_PARSER_TEST == true
+    uartParserTest();
+    #endif
     getGpsData();
     // rotationSystemInit(0, getGpsWidth, getGpsLongitude, 0, 0, 0, 0);
     

@@ -8,6 +8,7 @@ bool comandUpdeteFlag = false;
 #if UART_PARSER_TEST == true
 void uartParserTest() {
     if (parserSerial.available() > 0 && comandUpdeteFlag == false) {
+        uartBuf[0] = 0;
         if (parserSerial.find("GPS:")) {
             int amount = parserSerial.readBytesUntil(';', uartBuf, 30);
             uartBuf[amount] = NULL;
@@ -18,9 +19,11 @@ void uartParserTest() {
         Serial.println(uartBuf);
     }
 
-    char* ptrs[10];       // указатели на строки
-    int count = 0;        // счётчик подстрок
-    char* offset = uartBuf;   // указатель для работы
+    static char* ptrs[10];       // указатели на строки
+    static int count = 0;        // счётчик подстрок
+    static char* offset = uartBuf;   // указатель для работы
+    count = 0;
+    offset = uartBuf;
     if (comandUpdeteFlag == true) {
         while (true) {
             ptrs[count++] = offset;         // запоминаем указатель
