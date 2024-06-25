@@ -5,22 +5,25 @@ void uartParserInit() {
 
 char uartBuf[30];
 bool comandUpdeteFlag = false;
-#if UART_PARSER_TEST == true
-void uartParserTest() {
+char* ptrs[10];       // указатели на строки
+int count = 0;        // счётчик подстрок
+void uartParserUpdete() {
     if (parserSerial.available() > 0 && comandUpdeteFlag == false) {
         uartBuf[0] = 0;
         if (parserSerial.find("GPS:")) {
             int amount = parserSerial.readBytesUntil(';', uartBuf, 30);
             uartBuf[amount] = NULL;
+            #if UART_PARSER_TEST == true
             Serial.print(amount);
+            #endif
             comandUpdeteFlag = true;
         }
+        #if UART_PARSER_TEST == true
         Serial.print(" text: ");
         Serial.println(uartBuf);
+        #endif
     }
 
-    static char* ptrs[10];       // указатели на строки
-    static int count = 0;        // счётчик подстрок
     static char* offset = uartBuf;   // указатель для работы
     count = 0;
     offset = uartBuf;
@@ -34,11 +37,24 @@ void uartParserTest() {
             } else break;                     // иначе покидаем цикл
         }
 
+        #if UART_PARSER_TEST == true
         for (int i = 0; i < count; i++) {
             Serial.print("\t");
             Serial.println(ptrs[i]);
         }
+        #endif
         comandUpdeteFlag = false;
     }
+}
+
+double uartWidth() {
+    // return;
+}
+
+#if UART_PARSER_TEST == true
+void uartParserTest() {
+    uartParserUpdete();
+    // Serial.println("\t");
+    // Serial.println(uartWidth());
 }
 #endif
