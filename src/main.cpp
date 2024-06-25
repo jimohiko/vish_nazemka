@@ -27,6 +27,9 @@ void loop() {
     #if UART_PARSER_TEST == true
     uartParserTest();
     #endif
+    uartParserUpdete();
+    Serial.println(getUartDouble(enWidth));
+
     getGpsData();
     // rotationSystemInit(0, getGpsWidth, getGpsLongitude, 0, 0, 0, 0);
     

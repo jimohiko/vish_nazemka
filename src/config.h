@@ -6,7 +6,7 @@
 
 /*debag*/
 #define GPS_TEST false
-#define UART_PARSER_TEST true
+#define UART_PARSER_TEST false
 
 /*настройки системы поворота*/
 #define PI_NUMBER 3.141592653589793     //число пи

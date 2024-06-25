@@ -32,7 +32,7 @@ void uartParserUpdete() {
             ptrs[count++] = offset;         // запоминаем указатель
             offset = strchr(offset, ',');   // ищем новую запятую
             if (offset) {                   // если это не NULL
-                *offset = NULL;               // заменяем запятую на нулл
+                *offset = 0;               // заменяем запятую на нулл
                 offset++;                     // продолжаем
             } else break;                     // иначе покидаем цикл
         }
@@ -47,14 +47,48 @@ void uartParserUpdete() {
     }
 }
 
-double uartWidth() {
-    // return;
+double getDoubleFromChar(char *p) {
+	static double res;
+	static double divider;
+	res = 0;
+	divider = 0;
+	while (*p && *p == ' ') {
+		++p;
+	}
+	while (*p) {
+		if (*p == '.') {
+			divider = 1;
+			++p;
+			continue;
+		}
+		if (divider) {
+			divider *= 10;
+		}
+		res = res * 10 + (*p - '0');
+		++p;
+	}
+	if (divider > 1) {
+		res /= divider;
+	}
+	return res;
+}
+
+double getUartDouble(uint8_t index) {
+    if (ptrs[index] ==NULL) return 0;
+    if (ptrs[index][0] == 0) return 0;
+    #if UART_PARSER_TEST == true
+    Serial.print("In uW: ");
+    Serial.println(ptrs[index]);
+    #endif
+    return(getDoubleFromChar(ptrs[index]));
 }
 
 #if UART_PARSER_TEST == true
 void uartParserTest() {
     uartParserUpdete();
     // Serial.println("\t");
-    // Serial.println(uartWidth());
+    Serial.println(getUartDouble(enWidth));
+    Serial.println(getUartDouble(enLongitude));
+    Serial.println(getUartDouble(enAlt));
 }
 #endif
