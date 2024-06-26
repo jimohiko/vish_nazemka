@@ -7,12 +7,17 @@ char uartBuf[30];
 bool comandUpdeteFlag = false;
 char* ptrs[10];       // указатели на строки
 int count = 0;        // счётчик подстрок
-void uartParserUpdete() {
+bool uartParserUpdete() {
     if (parserSerial.available() > 0 && comandUpdeteFlag == false) {
         uartBuf[0] = 0;
-        if (parserSerial.find("GPS:")) {
+        if (parserSerial.find("GPS: ")) {
+
             int amount = parserSerial.readBytesUntil(';', uartBuf, 30);
-            uartBuf[amount] = NULL;
+            if (uartBuf[0]=='n') {
+                Serial.print("non");
+                return false;
+            }
+            uartBuf[amount] = 0;
             #if UART_PARSER_TEST == true
             Serial.print(amount);
             #endif
@@ -44,9 +49,12 @@ void uartParserUpdete() {
         }
         #endif
         comandUpdeteFlag = false;
-    }
-}
 
+        return true;
+    }
+    return false;
+}
+void rotationRun();
 double getDoubleFromChar(char *p) {
 	static double res;
 	static double divider;
@@ -66,6 +74,7 @@ double getDoubleFromChar(char *p) {
 		}
 		res = res * 10 + (*p - '0');
 		++p;
+        // rotationRun();
 	}
 	if (divider > 1) {
 		res /= divider;
@@ -80,7 +89,7 @@ double getUartDouble(uint8_t index) {
     Serial.print("In uW: ");
     Serial.println(ptrs[index]);
     #endif
-    return(getDoubleFromChar(ptrs[index]));
+    return getDoubleFromChar(ptrs[index]);
 }
 
 #if UART_PARSER_TEST == true

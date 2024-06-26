@@ -4,6 +4,8 @@
 #include "uart_parser/uart_parser.h"
 #include "rotation_system/rotation_system.h"
 
+double objectWidth = 0;
+double objectLongitude = 0;
 
 int tickIndicator = 0;
 
@@ -23,24 +25,33 @@ void loop() {
         Serial.print(".");
         tickIndicator = 0;
     }
-    
-    #if UART_PARSER_TEST == true
+
+#if UART_PARSER_TEST == true
     uartParserTest();
-    #endif
-    uartParserUpdete();
-    Serial.println("uart:");
-    Serial.println(getUartDouble(enWidth));
-    Serial.println(getUartDouble(enLongitude));
-    Serial.println("GPS:");
-    Serial.println(getGpsWidth());
-    Serial.println(getGpsLongitude());
+#endif
+
+    if (uartParserUpdete()) {
+        Serial.print("\n\tuart: ");
+        Serial.print(getUartDouble(enWidth));
+        Serial.print(" ");
+        Serial.print(getUartDouble(enLongitude));
+        Serial.print("\tGPS: ");
+        Serial.print(getGpsWidth());
+        Serial.print(" ");
+        Serial.print(getGpsLongitude());
+        rotationRun();
+        objectWidth = getUartDouble(enWidth);
+        rotationRun();
+        objectLongitude = getUartDouble(enLongitude);
+    }
+
 
     getGpsData();
-    guidanceRotationSystem(0, getGpsWidth(), getGpsLongitude(), 0, getUartDouble(enWidth), getUartDouble(enLongitude), 0);
+    guidanceRotationSystem(0, getGpsWidth(), getGpsLongitude(), 0, objectWidth, objectWidth, 0);
     rotationRun();
 
-    #if GPS_TEST == true
+#if GPS_TEST == true
     sensorTest();
-    #endif
+#endif
 
 }

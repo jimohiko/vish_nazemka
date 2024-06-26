@@ -80,7 +80,14 @@ double distancesHaversine(double stationWidth, double stationLongitude, double o
 
 /*функцыя наведения системы поворота*/
 void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double stationLongitude, double stationHeight, double objectWidth, double objectLongitude, double objectHeight) {
-    setRotation(360 - magneticAzimuth + azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude));
+    // setRotation(360 - magneticAzimuth + azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude));
+    static uint32_t t = 0;
+    static uint32_t a = 90;
+    if (millis() - t > 3000) {
+        t = millis();
+       setRotation(a);
+       a *= -1;
+    }
     myServo.write(convertingRadianToDegree(atan((objectHeight - stationHeight) / distancesHaversine(stationWidth, stationLongitude, objectWidth, objectLongitude))) + 90);
 }
 

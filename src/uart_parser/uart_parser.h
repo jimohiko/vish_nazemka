@@ -9,7 +9,7 @@ enum indexVale{
 };
 
 void uartParserInit();              //иницыализация UART парсера
-void uartParserUpdete();                //считование даных с uart
+bool uartParserUpdete();                //считование даных с uart
 double getUartDouble(uint8_t index);    //получение значения
 #if UART_PARSER_TEST == true
 void uartParserTest();
