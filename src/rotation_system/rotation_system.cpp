@@ -1,5 +1,5 @@
 #include "rotation_system.h"
-TinyStepper_28BYJ_48 myStepper;
+AccelStepper myStepper(AccelStepper::FULL4WIRE, STEPPER_PIN_IN1, STEPPER_PIN_IN2, STEPPER_PIN_IN3, STEPPER_PIN_IN4);
 Servo myServo;
 
 
@@ -8,24 +8,30 @@ void setRotation(int16_t setCorner);
 
 /*иницыализацыя системы поворота*/
 void rotationSystemInit() {
-    myStepper.connectToPins(STEPPER_PIN_IN1, STEPPER_PIN_IN2, STEPPER_PIN_IN3, STEPPER_PIN_IN4);
-    myStepper.setSpeedInStepsPerSecond(STEPPER_SPEED);
-    myStepper.setAccelerationInStepsPerSecondPerSecond(STEPPER_ACCELERATION);
+    // myStepper.connectToPins(STEPPER_PIN_IN1, STEPPER_PIN_IN2, STEPPER_PIN_IN3, STEPPER_PIN_IN4);
+    myStepper.setMaxSpeed(STEPPER_SPEED);
+    myStepper.setAcceleration(STEPPER_ACCELERATION);
     myServo.attach(SERVO_PIN);
     myServo.write(90);
     delay(100);
     setRotation(360);
-    delay(100);
-    setRotation(0);
+    // delay(100);
+    // setRotation(0);
 }
 
 /*функцыя установки градуса поворота шагового привода*/
 static int16_t currentRotationAngle = 0;
 void setRotation(int16_t setCorner) {
-        myStepper.moveRelativeInSteps(map(currentRotationAngle - setCorner, -360, 360, -STEPS_PER_REVILUTION, STEPS_PER_REVILUTION));
+    myStepper.moveTo(map(currentRotationAngle - setCorner, -360, 360, -STEPS_PER_REVILUTION, STEPS_PER_REVILUTION));
     currentRotationAngle = setCorner;
 }
 
+/*функцыя поворота*/
+void rotationRun() {
+    if (myStepper.distanceToGo() == 0)
+        myStepper.moveTo(myStepper.currentPosition());
+    myStepper.run();
+}
 
 /*функцыя конвертацыя градусов в радианы*/
 double convertingDegreeToRadian(double degree) {
@@ -73,7 +79,7 @@ double distancesHaversine(double stationWidth, double stationLongitude, double o
 
 
 /*функцыя наведения системы поворота*/
-void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double stationLongitude, double stationHeight , double objectWidth, double objectLongitude, double objectHeight){
+void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double stationLongitude, double stationHeight, double objectWidth, double objectLongitude, double objectHeight) {
     setRotation(360 - magneticAzimuth + azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude));
     myServo.write(convertingRadianToDegree(atan((objectHeight - stationHeight) / distancesHaversine(stationWidth, stationLongitude, objectWidth, objectLongitude))) + 90);
 }

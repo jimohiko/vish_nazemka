@@ -37,7 +37,8 @@ void loop() {
 
     getGpsData();
     guidanceRotationSystem(0, getGpsWidth(), getGpsLongitude(), 0, getUartDouble(enWidth), getUartDouble(enLongitude), 0);
-    
+    rotationRun();
+
     #if GPS_TEST == true
     sensorTest();
     #endif
