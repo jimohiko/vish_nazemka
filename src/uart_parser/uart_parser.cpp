@@ -20,8 +20,8 @@ bool uartParserUpdete() {
             if (*puartBuf == '\n') {
                 *puartBuf = 0;
                 
-                Serial.print("getted: ");
-                Serial.println(uartBuf);
+                // Serial.print("getted: ");
+                // Serial.println(uartBuf);
                 puartBuf = uartBuf;
                 if (memcmp(uartBuf, packetStart, 5) == 0) {
                     if (uartBuf[5] == 'n') {

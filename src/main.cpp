@@ -45,7 +45,7 @@ void loop() {
 
 
     getGpsData();
-    guidanceRotationSystem(0, getGpsWidth(), getGpsLongitude(), 0, objectWidth, objectWidth, 0);
+    guidanceRotationSystem(0, getGpsWidth(), getGpsLongitude(), 0, objectWidth, objectLongitude, 0);
     rotationRun();
 
 #if GPS_TEST == true

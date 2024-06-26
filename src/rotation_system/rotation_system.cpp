@@ -89,7 +89,7 @@ void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double 
         ugol = azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude);
         setRotation(ugol);
         Serial.print("\t");
-        Serial.print(ugol);
+        Serial.println(ugol);
     }
     // static int32_t a = 180;
     // static int32_t c = 0;
