@@ -3,35 +3,63 @@ void uartParserInit() {
     parserSerial.begin(PARSER_SERIAL_SPEED);
 }
 
-char uartBuf[30];
+char uartBuf[50], *puartBuf = uartBuf;
 bool comandUpdeteFlag = false;
 char* ptrs[10];       // указатели на строки
 int count = 0;        // счётчик подстрок
+const char packetStart[] = "GPS: ";
+uint8_t countReading = 0;
+uint8_t maxCountReading = 5;
 bool uartParserUpdete() {
-    if (parserSerial.available() > 0 && comandUpdeteFlag == false) {
-        uartBuf[0] = 0;
-        if (parserSerial.find("GPS: ")) {
-
-            int amount = parserSerial.readBytesUntil(';', uartBuf, 30);
-            if (uartBuf[0]=='n') {
-                Serial.print("non");
-                return false;
+    if (comandUpdeteFlag == false) {
+        countReading = maxCountReading;
+        while (countReading && parserSerial.available() > 0)
+        {
+            --countReading;
+            *puartBuf = parserSerial.read();
+            if (*puartBuf == '\n') {
+                *puartBuf = 0;
+                
+                Serial.print("getted: ");
+                Serial.println(uartBuf);
+                puartBuf = uartBuf;
+                if (memcmp(uartBuf, packetStart, 5) == 0) {
+                    if (uartBuf[5] == 'n') {
+                        Serial.print("non");
+                        return false;
+                    }
+                    comandUpdeteFlag = true;     
+                }
+            } else {
+                if (puartBuf - uartBuf < 49) {
+                    ++puartBuf;
+                }
             }
-            uartBuf[amount] = 0;
-            #if UART_PARSER_TEST == true
-            Serial.print(amount);
-            #endif
-            comandUpdeteFlag = true;
         }
-        #if UART_PARSER_TEST == true
-        Serial.print(" text: ");
-        Serial.println(uartBuf);
-        #endif
+        
+        // uartBuf[0] = 0;
+        // if (parserSerial.find("GPS: ")) {
+
+        //     int amount = parserSerial.readBytesUntil(';', uartBuf, 30);
+        //     if (uartBuf[0]=='n') {
+        //         Serial.print("non");
+        //         return false;
+        //     }
+        //     uartBuf[amount] = 0;
+        //     #if UART_PARSER_TEST == true
+        //     Serial.print(amount);
+        //     #endif
+        //     comandUpdeteFlag = true;
+        // }
+        // #if UART_PARSER_TEST == true
+        // Serial.print(" text: ");
+        // Serial.println(uartBuf);
+        // #endif
     }
 
     static char* offset = uartBuf;   // указатель для работы
     count = 0;
-    offset = uartBuf;
+    offset = uartBuf + 5;
     if (comandUpdeteFlag == true) {
         while (true) {
             ptrs[count++] = offset;         // запоминаем указатель
