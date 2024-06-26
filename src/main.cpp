@@ -39,9 +39,7 @@ void loop() {
         Serial.print(getGpsWidth());
         Serial.print(" ");
         Serial.print(getGpsLongitude());
-        rotationRun();
         objectWidth = getUartDouble(enWidth);
-        rotationRun();
         objectLongitude = getUartDouble(enLongitude);
     }
 

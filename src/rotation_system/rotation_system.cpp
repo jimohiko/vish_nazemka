@@ -13,8 +13,8 @@ void rotationSystemInit() {
     myStepper.setAcceleration(STEPPER_ACCELERATION);
     myServo.attach(SERVO_PIN);
     myServo.write(90);
-    delay(100);
-    setRotation(360);
+    // delay(100);
+    // setRotation(360);
     // delay(100);
     // setRotation(0);
 }
@@ -22,7 +22,8 @@ void rotationSystemInit() {
 /*функцыя установки градуса поворота шагового привода*/
 static int16_t currentRotationAngle = 0;
 void setRotation(int16_t setCorner) {
-    myStepper.moveTo(map(currentRotationAngle - setCorner, -360, 360, -STEPS_PER_REVILUTION, STEPS_PER_REVILUTION));
+    myStepper.moveTo(map(setCorner, 360, -360, -STEPS_PER_REVILUTION, STEPS_PER_REVILUTION));
+    // myStepper.moveTo(map(currentRotationAngle - setCorner, -360, 360, -STEPS_PER_REVILUTION, STEPS_PER_REVILUTION));
     currentRotationAngle = setCorner;
 }
 
@@ -80,14 +81,27 @@ double distancesHaversine(double stationWidth, double stationLongitude, double o
 
 /*функцыя наведения системы поворота*/
 void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double stationLongitude, double stationHeight, double objectWidth, double objectLongitude, double objectHeight) {
-    // setRotation(360 - magneticAzimuth + azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude));
     static uint32_t t = 0;
-    static uint32_t a = 90;
-    if (millis() - t > 3000) {
+    static double ugol;
+    if (millis() - t > 100) {
         t = millis();
-       setRotation(a);
-       a *= -1;
+        // ugol = 360 - magneticAzimuth + azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude);
+        ugol = azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude);
+        setRotation(ugol);
+        Serial.print("\t");
+        Serial.print(ugol);
     }
+    // static int32_t a = 180;
+    // static int32_t c = 0;
+    // if (millis() - t > 100) {
+    //     t = millis();
+    //     if (++c > 50) {
+    //         c = 0;
+    //         a *= -1;
+    //     }
+    //     setRotation(a);
+    // } else {
+    // }
     myServo.write(convertingRadianToDegree(atan((objectHeight - stationHeight) / distancesHaversine(stationWidth, stationLongitude, objectWidth, objectLongitude))) + 90);
 }
 
