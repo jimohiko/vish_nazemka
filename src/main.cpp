@@ -14,7 +14,7 @@ void setup() {
 
     uartParserInit();
     sensorsInit();
-    // rotationSystemInit();
+    rotationSystemInit();
 }
 
 void loop() {
@@ -28,10 +28,15 @@ void loop() {
     uartParserTest();
     #endif
     uartParserUpdete();
+    Serial.println("uart:");
     Serial.println(getUartDouble(enWidth));
+    Serial.println(getUartDouble(enLongitude));
+    Serial.println("GPS:");
+    Serial.println(getGpsWidth());
+    Serial.println(getGpsLongitude());
 
     getGpsData();
-    // rotationSystemInit(0, getGpsWidth, getGpsLongitude, 0, 0, 0, 0);
+    guidanceRotationSystem(0, getGpsWidth(), getGpsLongitude(), 0, getUartDouble(enWidth), getUartDouble(enLongitude), 0);
     
     #if GPS_TEST == true
     sensorTest();

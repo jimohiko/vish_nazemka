@@ -17,8 +17,6 @@ void rotationSystemInit() {
     setRotation(360);
     delay(100);
     setRotation(0);
-    delay(100);
-    guidanceRotationSystem(180, 0, 60, 0, 0.0001, 60, 11.1196);
 }
 
 /*функцыя установки градуса поворота шагового привода*/
