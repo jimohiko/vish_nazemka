@@ -83,13 +83,18 @@ double distancesHaversine(double stationWidth, double stationLongitude, double o
 void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double stationLongitude, double stationHeight, double objectWidth, double objectLongitude, double objectHeight) {
     static uint32_t t = 0;
     static double ugol;
+    static double servoUgol;
     if (millis() - t > 100) {
         t = millis();
         // ugol = 360 - magneticAzimuth + azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude);
         ugol = azimuth(stationWidth, stationLongitude, objectWidth, objectLongitude);
         setRotation(ugol);
         Serial.print("\t");
-        Serial.println(ugol);
+        Serial.print(ugol);
+        Serial.print("\t");
+        servoUgol = (convertingRadianToDegree(atan((objectHeight - stationHeight) / distancesHaversine(stationWidth, stationLongitude, objectWidth, objectLongitude))));
+        Serial.println(servoUgol);
+    myServo.write(servoUgol);
     }
     // static int32_t a = 180;
     // static int32_t c = 0;
@@ -102,6 +107,5 @@ void guidanceRotationSystem(double magneticAzimuth, double stationWidth, double 
     //     setRotation(a);
     // } else {
     // }
-    myServo.write(convertingRadianToDegree(atan((objectHeight - stationHeight) / distancesHaversine(stationWidth, stationLongitude, objectWidth, objectLongitude))) + 90);
 }
 

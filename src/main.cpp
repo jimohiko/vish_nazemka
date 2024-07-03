@@ -6,6 +6,7 @@
 
 double objectWidth = 0;
 double objectLongitude = 0;
+double objectAlt = 0;
 
 int tickIndicator = 0;
 
@@ -32,20 +33,21 @@ void loop() {
 
     if (uartParserUpdete()) {
         Serial.print("\n\tuart: ");
-        Serial.print(getUartDouble(enWidth));
+        Serial.print(getUartDouble(enWidth), 6);
         Serial.print(" ");
-        Serial.print(getUartDouble(enLongitude));
+        Serial.print(getUartDouble(enLongitude), 6);
         Serial.print("\tGPS: ");
-        Serial.print(getGpsWidth());
+        Serial.print(getGpsWidth(), 6);
         Serial.print(" ");
-        Serial.print(getGpsLongitude());
+        Serial.print(getGpsLongitude(), 6);
         objectWidth = getUartDouble(enWidth);
         objectLongitude = getUartDouble(enLongitude);
+        objectAlt = getUartDouble(enAlt);
     }
 
 
     getGpsData();
-    guidanceRotationSystem(0, getGpsWidth(), getGpsLongitude(), 0, objectWidth, objectLongitude, 0);
+    guidanceRotationSystem(0, getGpsWidth(), getGpsLongitude(), 109, objectWidth, objectLongitude, objectAlt);
     rotationRun();
 
 #if GPS_TEST == true
